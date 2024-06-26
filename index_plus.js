@@ -15,19 +15,20 @@ const ACCOUNT = { //账号相关，安全性更高
 const OPT = { //网站配置
 
   /*--前台参数--*/
-  "siteDomain" : "域名",// 域名(不带https 也不带/)
+  "siteDomain" : "blog.bitwld.com",// 域名(不带https 也不带/)
   "siteName" : "CFBLOG-Plus",//博客名称
   "siteDescription":"CFBLOG-Plus" ,//博客描述
   "keyWords":"cloudflare,KV,workers,blog",//关键字
-  "logo":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/JustNews/files/logo2.png",//JustNews主题的logo
+  //"logo":"https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/themes/JustNews/files/logo2.png",//JustNews主题的logo
+  "logo":"https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/logo.png",//JustNews主题的logo
 
-  "theme_github_path":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/",//主题路径
-  "themeURL" : "https://raw.githubusercontent.com/Arronlong/cfblog-plus/master/themes/JustNews/", // 模板地址,以 "/"" 结尾
+  "theme_github_path":"https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/themes/",//主题路径
+  "themeURL" : "https://raw.githubusercontent.com/usjinbao/cfblog-plus/master/themes/JustNews/", // 模板地址,以 "/"" 结尾
   //"search_xml_url":"", //search.xml外部链接，可通过github的action自动生成，不设置则实时生成
   //"sitemap_xml_url":"", //sitemap.xml外部链接，可通过github的action自动生成，不设置则实时生成
   
-  "pageSize" : 5,//每页文章数
-  "recentlySize" : 6,//最近文章数
+  "pageSize" : 10,//每页文章数
+  "recentlySize" : 5,//最近文章数
   "recentlyType" : 1,//最近文章类型：1-按创建时间倒序（按id倒序），2-按修改时间排序
   "readMoreLength":150,//阅读更多截取长度
   "cacheTime" : 60*60*24*2, //文章在浏览器的缓存时长(秒),建议=文章更新频率
@@ -262,8 +263,8 @@ async function handlerRequest(event){
 async function handle_favicon(request){
   /*
   想要自定义，或者用指定的ico，可将此请求置为404，并在codeBeforHead中自行添加类似代码：
-    <link rel="icon" type="image/x-icon" href="https://cdn.jsdelivr.net/gh/gdtool/zhaopp/cfblog/favicon.ico" />
-    <link rel="Shortcut Icon" href="https://cdn.jsdelivr.net/gh/gdtool/zhaopp/cfblog/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus/favicon.ico" />
+    <link rel="Shortcut Icon" href="https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus/favicon.ico">
   */
   /*
   return new Response("404",{
