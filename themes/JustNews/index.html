@@ -53,7 +53,19 @@
 							{{ /widgetMenuList }}
 						</ul>
 					</nav>
-					<div class="navbar-action pull-right">
+					
+				<div class="navbar-search">
+                        <span id="searchIcon"><svg t="1719614525810" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5526" width="32" height="32"><path d="M448 704C306.84 704 192 589.158 192 448 192 306.84 306.84 192 448 192c141.158 0 256 114.84 256 256 0 141.158-114.842 256-256 256z m0-452c-108.076 0-196 87.924-196 196 0 108.074 87.924 196 196 196 108.074 0 196-87.926 196-196 0-108.076-87.926-196-196-196z" fill="#d4237a" p-id="5527" data-spm-anchor-id="a313x.search_index.0.i14.117c3a81daTgoR" class="selected"></path><path d="M702.006 659.57l128.206 128.206-42.426 42.426-128.206-128.206z" fill="#d4237a" p-id="5528" data-spm-anchor-id="a313x.search_index.0.i15.117c3a81daTgoR" class="selected"></path><path d="M904 1024H120c-66.168 0-120-53.832-120-120V120C0 53.832 53.832 0 120 0h784c66.168 0 120 53.832 120 120v784c0 66.168-53.832 120-120 120zM120 4C56.038 4 4 56.038 4 120v784c0 63.962 52.038 116 116 116h784c63.962 0 116-52.038 116-116V120c0-63.962-52.038-116-116-116H120z" fill="#D8DDE3" p-id="5529"></path></svg></span>
+             </div>
+			    <div id="searchModal" style="display: none;">
+                        <div id="searchContent">
+                        <input type="text" class="searchInput" id="searchQuery" placeholder="请输入关键词搜索...">
+                        <hr class="divider">
+                        <div id="results"></div>
+                </div>
+</div>
+
+					<div class="navbar-action pull-right">					
 						<div id="j-user-wrap">
 							<a class="login cur" href="/admin">登录</a>
 						</div>
@@ -206,8 +218,105 @@
 				</i>
 			</div>
 		</div>
-		<link rel='stylesheet' id='lazyload-spinner-css' href='{{ &OPT.theme_github_path }}JustNews/files/lazyload.css?ver=3.4.9' type='text/css' media='all' />
-		<script type='text/javascript' id='main-js-extra'>/* <![CDATA[ */
+		<link rel='stylesheet' id='lazyload-spinner-css' href='{{ &OPT.theme_github_path }}JustNews/files/lazyload.css?ver=3.4.9' type='text/css' media='all' />	
+		
+		<style>
+        :root {
+            --search-modal-width: 30%; /* 弹出窗口宽度 */
+            --search-modal-height: 80%; /* 弹出窗口高度 */
+            --search-input-font-size: 16px; /* 搜索输入框字体大小 */
+            --search-placeholder-font-size: 15px; /* 输入框提示文字字体大小 */
+            --search-result-title-font-size: 15px; /* 搜索结果标题字体大小 */
+            --search-result-content-font-size: 13px; /* 搜索结果内容字体大小 */
+        }
+		
+
+        
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        #searchIcon {
+            cursor: pointer;
+            font-size: 24px;
+            color: #007bff;
+            display: inline-block;
+        }
+        
+        #searchModal {
+            display: none; 
+            position: fixed;
+            z-index: 1; 
+            top: 0; 
+            left: 0;
+            right: 0; 
+            bottom: 0;
+            overflow-y: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        #searchContent {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: var(--search-modal-width);
+            text-align: left;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+        
+        .searchInput {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 10px;
+            border: none;
+            outline: none;
+            background-color: #ffffff;
+            font-size: var(--search-input-font-size);
+            box-sizing: border-box;
+        }
+        
+        .searchInput::placeholder {
+            font-size: var(--search-placeholder-font-size);
+        }
+        
+        .divider {
+            margin: 1rem 0;
+            height: 1px;
+            background-color: #ccc;
+        }
+        
+        .searchResult {
+            margin-bottom: 1rem;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .searchResult h3 {
+            font-size: var(--search-result-title-font-size);
+        }
+        
+        .searchResult p {
+            font-size: var(--search-result-content-font-size);
+        }
+        
+        .highlight {
+            background-color: yellow;
+        }
+        
+        .resultUrl {
+            margin-top: 5px;
+            color: #666;
+            text-decoration: none;
+        }
+    </style>
+	
+		<script type='text/javascript' id='main-js-extra'>/* <![CDATA[ */	
 			var _wpcom_js = {
 				"webp": "",
 				"ajaxurl": "",
@@ -316,6 +425,214 @@
 				});
 			})(jQuery);</script>
 		{{ &OPT.codeBeforBody }}
-	</body>
+		<script>
+    document.getElementById('searchIcon').addEventListener('click', function() {
+        document.getElementById('searchModal').style.display = 'block';
+        document.getElementById('searchQuery').value = ''; // 每次打开时清空搜索框
+    });
 
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('searchModal')) {
+            document.getElementById('searchModal').style.display = 'none';
+        }
+    };
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            document.getElementById('searchModal').style.display = 'none';
+        }
+    });
+
+    // 示例函数，用于动态调整窗口大小和字体大小
+    function updateModalSize(width, height, inputFontSize, placeholderFontSize, titleFontSize, contentFontSize) {
+        document.documentElement.style.setProperty('--search-modal-width', width);
+        document.documentElement.style.setProperty('--search-modal-height', height);
+        document.documentElement.style.setProperty('--search-input-font-size', inputFontSize + 'px');
+        document.documentElement.style.setProperty('--search-placeholder-font-size', placeholderFontSize + 'px');
+        document.documentElement.style.setProperty('--search-result-title-font-size', titleFontSize + 'px');
+        document.documentElement.style.setProperty('--search-result-content-font-size', contentFontSize + 'px');
+    }
+
+    // 示例调用函数以改变大小（您可以根据需要调用这个函数）
+    // updateModalSize('50%', '90%', 18, 16, 20, 18);
+    
+    // ... 其他JavaScript代码保持不变 ...
+</script>
+
+<script>
+
+    document.getElementById('searchIcon').addEventListener('click', function() {
+
+        document.getElementById('searchModal').style.display = 'block';
+
+    });
+
+
+
+    window.onclick = function(event) {
+
+        if (event.target == document.getElementById('searchModal')) {
+
+            document.getElementById('searchModal').style.display = 'none';
+
+        }
+
+    };
+
+
+
+    async function loadXML() {
+
+        try {
+
+            const response = await fetch('https://usjinbao.serv00.net/search.xml'); // 使用相对路径
+
+            if (!response.ok) throw new Error('Failed to fetch XML file.');
+
+            const xmlText = await response.text();
+
+            const parser = new DOMParser();
+
+            return parser.parseFromString(xmlText, 'application/xml');
+
+        } catch (error) {
+
+            console.error('Error loading XML:', error);
+
+            return null;
+
+        }
+
+    }
+
+
+
+    let xmlDoc = null;
+
+    loadXML().then(data => xmlDoc = data);
+
+
+
+    function highlightKeyword(text, keyword) {
+
+        const regex = new RegExp(`(${keyword})`, 'gi');
+
+        return text.replace(regex, `<span class="highlight">$1</span>`);
+
+    }
+
+
+
+    function performSearch(query) {
+
+    if (!xmlDoc) return;
+
+    const blogs = xmlDoc.getElementsByTagName('blog');
+
+    let results = '';
+
+
+
+    for (let i = 0; i < blogs.length; i++) {
+
+        const titleElement = blogs[i].getElementsByTagName('title')[0];
+
+        const contentElement = blogs[i].getElementsByTagName('content')[0];
+
+        const urlElement = blogs[i].getElementsByTagName('url')[0];
+
+        const timeElement = blogs[i].getElementsByTagName('time')[0];
+
+
+
+        if (titleElement && contentElement && urlElement && timeElement) {
+
+            const title = titleElement.textContent;
+
+            const content = contentElement.textContent;
+
+            const url = urlElement.textContent;
+
+            const time = timeElement.textContent;
+
+
+
+            if (title.toLowerCase().includes(query.toLowerCase()) || content.toLowerCase().includes(query.toLowerCase())) {
+
+                const keywordIndex = content.toLowerCase().indexOf(query.toLowerCase());
+
+
+
+                if (keywordIndex !== -1) {
+
+                    // 计算前后内容长度，确保关键词在截取的范围内
+
+                    const snippetStart = Math.max(0, keywordIndex - 100);
+
+                    const snippetEnd = Math.min(content.length, keywordIndex + query.length + 100);
+
+                    const snippet = content.substring(snippetStart, snippetEnd);
+
+                    const highlightedSnippet = highlightKeyword(snippet, query);
+
+
+
+                    results += `
+
+                        <div class="searchResult" onclick="window.location.href='${url}'">
+
+                            <h3>${highlightKeyword(title, query)}</h3>
+
+                            <p>${highlightedSnippet}</p>
+
+                            <div class="resultUrl">本文地址：${url} - 发布时间：${time}</div>
+
+                        </div>
+
+                    `;
+
+                } else {
+
+                    // 如果直接在标题中找到了关键词，则使用标题进行高亮
+
+                    results += `
+
+                        <div class="searchResult" onclick="window.location.href='${url}'">
+
+                            <h3>${highlightKeyword(title, query)}</h3>
+
+                            <p>${highlightKeyword(content.slice(0, 200), query)}...</p> <!-- 显示文章前200字作为摘要 -->
+
+                            <div class="resultUrl">本文地址：${url} - 发布时间：${time}</div>
+
+                        </div>
+
+                    `;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+
+    document.getElementById('results').innerHTML = results || '<p>没有找到匹配的结果。</p>';
+
+}
+
+
+
+    document.getElementById('searchQuery').addEventListener('input', () => {
+
+        const query = document.getElementById('searchQuery').value.trim();
+
+        performSearch(query);
+
+    });
+
+</script>
+	</body>
 </html>
