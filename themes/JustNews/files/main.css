@@ -10672,7 +10672,7 @@ body.visual-editor>header.header {
 .navbar-search {
 	display:none;
 	position:absolute;
-	left:-8px;
+	left:-10px;
 	top:6px;
 	width:100%;
 	z-index:1
