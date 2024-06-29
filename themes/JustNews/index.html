@@ -236,11 +236,21 @@
             font-family: Arial, sans-serif;
         }
         
+        .navbar-search {
+         position: relative; /* 添加这一行以确保它是定位上下文 */
+		 z-index: 100; /* 设置高于导航栏的z-index */
+		 display: flex;
+		 
+        }
+		
         #searchIcon {
             cursor: pointer;
             font-size: 24px;
             color: #007bff;
             display: inline-block;
+			position: absolute;
+			display: inline-flex; /* 或 inline-block，具体取决于其他样式的影响 */
+			vertical-align: middle; /* 使图标与文本垂直居中对齐 */
         }
         
         #searchModal {
