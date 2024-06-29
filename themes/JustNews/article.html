@@ -54,19 +54,19 @@
 							{{ /widgetMenuList }}
 						</ul>
 					</nav>
-			
-
-			    <div id="searchModal" style="display: none;">
+					
+					<div id="searchModal">
                         <div id="searchContent">
-                        <input type="text" class="searchInput" id="searchQuery" placeholder="请输入关键词搜索...">
+                        <input type="text" class="searchInput" id="searchQuery" placeholder="请输入搜索关键词...">
                         <hr class="divider">
                         <div id="results"></div>
                 </div>
 </div>
-					<div class="navbar-action pull-right">
+
+					<div class="navbar-action pull-right">					
 						<div id="j-user-wrap">
 						<div class="navbar-search" span id="searchIcon">
-    <img src="https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/themes/JustNews/sc.svg" alt="Search Icon" width="16" height="16">
+    <img src="https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/themes/JustNews/sc.svg" alt="Search Icon" width="15" height="15">
 </div>
 							<a class="login cur" href="/admin">登录</a>
 						</div>
@@ -226,7 +226,7 @@
 
 <style>
         :root {
-            --search-modal-width: 30%; /* 弹出窗口宽度 */
+            --search-modal-width: 40%; /* 弹出窗口宽度 */
             --search-modal-height: 80%; /* 弹出窗口高度 */
             --search-input-font-size: 16px; /* 搜索输入框字体大小 */
             --search-placeholder-font-size: 15px; /* 输入框提示文字字体大小 */
@@ -234,6 +234,7 @@
             --search-result-content-font-size: 13px; /* 搜索结果内容字体大小 */
         }
 		
+
 
         
         body {
@@ -253,22 +254,24 @@
             color: #007bff;
             display: inline-block;
 			position: absolute;
-			display: inline-flex; /* 或 inline-block，具体取决于其他样式的影响 */
 			vertical-align: middle; /* 使图标与文本垂直居中对齐 */
-
+            display: inline-flex !important; /* 或者 display: inline-block !important; 根据需要选择 */
         }
         
         #searchModal {
             display: none; 
             position: fixed;
-            z-index: 1; 
+            z-index: 2; 
             top: 0; 
             left: 0;
             right: 0; 
             bottom: 0;
             overflow-y: auto;
             background-color: rgba(0,0,0,0.4);
+
         }
+		
+		
         
         #searchContent {
             background-color: #fefefe;
@@ -279,6 +282,10 @@
             text-align: left;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-radius: 15px;
+			position: relative; /* 为绝对定位的子元素提供定位上下文 */
+			overflow-y: auto; /* 允许内容溢出时滚动 */
+			max-width: 900px; /* 您可以根据需要设定一个最大宽度，例如1200px */
+			min-width: 800px; /* 您可以根据需要设定一个最大宽度，例如1200px */
         }
         
         .searchInput {
@@ -305,15 +312,20 @@
         
         .searchResult {
             margin-bottom: 1rem;
-            padding: 10px;
             background-color: #f2f2f2;
             border-radius: 5px;
             transition: background-color 0.3s ease;
             cursor: pointer;
+			padding: 1px 10px 5px 10px; /* 上左下右，调整上下的数值 */
+
         }
-        
+        .searchResult:hover {
+            background-color: #ddd; /* 或者选择您希望的更深的颜色 */
+        }
+
         .searchResult h3 {
             font-size: var(--search-result-title-font-size);
+			font-weight: bold;
         }
         
         .searchResult p {
@@ -377,23 +389,31 @@ var fifuImageVars = {"fifu_lazy":"1","fifu_woo_lbox_enabled":"1","fifu_woo_zoom"
 			</script>
 <script>hljs.initHighlightingOnLoad(); //代码高亮
 					</script>
-					<script>
-    document.getElementById('searchIcon').addEventListener('click', function() {
-        document.getElementById('searchModal').style.display = 'block';
-        document.getElementById('searchQuery').value = ''; // 每次打开时清空搜索框
-    });
 
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('searchModal')) {
-            document.getElementById('searchModal').style.display = 'none';
-        }
-    };
+<script>
+    // 假设遮罩层的ID为'modalBackdrop'
+document.getElementById('searchIcon').addEventListener('click', function() {
+    document.getElementById('modalBackdrop').style.display = 'block'; // 显示遮罩层
+    document.getElementById('searchWindow').style.display = 'block'; // 显示搜索窗口
+    document.getElementById('searchQuery').value = ''; // 每次打开时清空搜索框
+});
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") {
-            document.getElementById('searchModal').style.display = 'none';
-        }
-    });
+window.onclick = function(event) {
+    // 确保点击事件只在直接点击遮罩层时触发隐藏逻辑
+    if (event.target === document.getElementById('modalBackdrop') && event.target !== event.currentTarget) {
+        document.getElementById('modalBackdrop').style.display = 'none';
+        document.getElementById('searchWindow').style.display = 'none';
+    }
+};
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") { // 按下Esc键时隐藏
+        document.getElementById('modalBackdrop').style.display = 'none';
+        document.getElementById('searchWindow').style.display = 'none';
+    }
+});
+	
+	
 
     // 示例函数，用于动态调整窗口大小和字体大小
     function updateModalSize(width, height, inputFontSize, placeholderFontSize, titleFontSize, contentFontSize) {
@@ -408,7 +428,6 @@ var fifuImageVars = {"fifu_lazy":"1","fifu_woo_lbox_enabled":"1","fifu_woo_zoom"
     // 示例调用函数以改变大小（您可以根据需要调用这个函数）
     // updateModalSize('50%', '90%', 18, 16, 20, 18);
     
-    // ... 其他JavaScript代码保持不变 ...
 </script>
 
 <script>
@@ -437,7 +456,7 @@ var fifuImageVars = {"fifu_lazy":"1","fifu_woo_lbox_enabled":"1","fifu_woo_zoom"
 
         try {
 
-            const response = await fetch('https://usjinbao.serv00.net/search.xml'); // 使用相对路径
+            const response = await fetch('https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/search.xml'); // 使用相对路径
 
             if (!response.ok) throw new Error('Failed to fetch XML file.');
 
@@ -586,7 +605,7 @@ var fifuImageVars = {"fifu_lazy":"1","fifu_woo_lbox_enabled":"1","fifu_woo_zoom"
     });
 
 </script>
-		{{ &OPT.codeBeforBody }}
+        {{ &OPT.codeBeforBody }}
 	</body>
 
 </html>
