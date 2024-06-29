@@ -10675,7 +10675,7 @@ body.visual-editor>header.header {
 	left:-10px;
 	top:6px;
 	width:100%;
-	z-index:1
+	z-index:	
 }
 .navbar-search.warning::-webkit-input-placeholder {
 	color:#fa5555!important
