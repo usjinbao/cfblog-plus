@@ -9,64 +9,55 @@ jobs:
   update_search_xml:
     runs-on: ubuntu-latest
     steps:
-    - name: 检出存储库
-      uses: actions/checkout@v3  # 更新到最新版本，以获得更好的兼容性和功能
-
-    - name: 设置 Node.js 环境 16
-      uses: actions/setup-node@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
       with:
-        node-version: 16  # 指定使用 Node.js 16 版本
+        fetch-depth: 0
 
-    - name: 检查 Data/search.xml 文件是否存在
-      id: check_file
-      run: |
-        if [ -f "Data/search.xml" ]; then
-          echo "::set-output name=exists::true"
-        else
-          echo "::set-output name=exists::false"
-        fi
+    # ... 其他原有步骤 ...
 
-    - name: 从远程下载 search.xml 文件
-      env:
-        CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
-        CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
-      run: |
-        mkdir -p Data
-        curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search_new.xml
-
-    - name: 比较并更新文件（如有不同）
+    - name: Compare and Update if Different
       if: steps.check_file.outputs.exists == 'true'
       run: |
-        cmp --silent Data/search.xml Data/search_new.xml && {
-          echo "文件一致，无需更新。"
-          echo "::notice ::文件比较后发现无变化，跳过此步骤。"
-        } || {
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git pull origin $GITHUB_REF --rebase
-          git add Data/search.xml
-          git commit -m "更新 search.xml 文件"
-          git push origin HEAD:$GITHUB_REF
-          echo "文件更新成功。"
+        set -e
+        RETRIES=3
+        until [ $RETRIES -eq 0 ]; do
+          cmp --silent Data/search.xml Data/search_new.xml && {
+            echo "Files are identical. Skipping further update actions."
+            echo "::warning::No changes detected in search.xml."
+            break
+          } || {
+            git config --global user.email "action@github.com"
+            git config --global user.name "GitHub Action"
+            git pull origin $GITHUB_REF --rebase # 拉取并变基处理冲突
+            git add Data/search.xml
+            git commit -m "Update search.xml with changes"
+            git push origin HEAD:$GITHUB_REF && {
+              echo "Update successful."
+              break
+            } || {
+              echo "::error::Push failed. Retrying in $(($RETRIES-1)) seconds."
+              sleep 5
+              ((RETRIES--))
+            }
+          }
+        done
+        [ $RETRIES -eq 0 ] && {
+          echo "::error::Failed to update after $((3-$RETRIES)) retries. Manual intervention required."
+          exit 1
         }
 
-    - name: 若文件不存在，提交并推送新下载的文件
-      if: steps.check_file.outputs.exists == 'false'
-      run: |
-        git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
-        git add Data/search_new.xml
-        git commit -m "初次提交或重新添加 search.xml 文件"
-        git push origin HEAD:$GITHUB_REF
-        echo "新文件已成功提交至仓库。"
+    # ... 其他原有步骤 ...
 
-    - name: 工作流完成标识
+    - name: Workflow Completion Marker
       if: always()
       run: |
         if [ "${{ steps.compare_and_update_if_different.outcome }}" = "success" ]; then
-          echo '工作流执行成功。所有更新已应用或确认无需更改。'
+          echo 'Workflow completed successfully. All updates applied or verified no changes needed.'
         elif [ "${{ steps.compare_and_update_if_different.outcome }}" = "failure" ]; then
-          echo '::错误::工作流未成功完成。请查看前面步骤的错误详情。'
+          echo '::error::Workflow did not complete successfully. See previous steps for error details.'
         else
+          echo 'Workflow finished without applying changes. No updates were necessary.'
+        fi
           echo '工作流结束，未应用更改。无需更新。'
         fi
