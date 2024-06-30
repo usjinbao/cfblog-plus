@@ -1,9 +1,12 @@
 name: CFBlog Workflow Updated
 
 on:
-  workflow_dispatch:  # 手动触发事件保持不变
-  watch:
-    types: started
+  # 手动触发事件保持不变
+  workflow_dispatch:
+
+  # 定时触发器，每小时运行一次
+  schedule:
+    - cron: '0 * * * *'  # 每小时的第0分钟执行
 
 jobs:
   build:
@@ -32,7 +35,6 @@ jobs:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
         git switch -C $CFBLOG_BRANCH  # 使用git switch命令替代git checkout，这是较新的命令
-        # 第二次git checkout $CFBLOG_BRANCH是冗余的，已移除
         
     - name: Commit change
       run: |
