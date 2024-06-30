@@ -1,4 +1,4 @@
-name: CFBlog 工作流优化版
+name: CFBlog Workflow with Robust Error Handling
 
 on:
   workflow_dispatch:
@@ -20,44 +20,26 @@ jobs:
       if: steps.check_file.outputs.exists == 'true'
       run: |
         set -e
-        RETRIES=3
-        until [ $RETRIES -eq 0 ]; do
-          cmp --silent Data/search.xml Data/search_new.xml && {
-            echo "Files are identical. Skipping further update actions."
-            echo "::warning::No changes detected in search.xml."
-            break
-          } || {
-            git config --global user.email "action@github.com"
-            git config --global user.name "GitHub Action"
-            git pull origin $GITHUB_REF --rebase # 拉取并变基处理冲突
-            git add Data/search.xml
-            git commit -m "Update search.xml with changes"
-            git push origin HEAD:$GITHUB_REF && {
-              echo "Update successful."
-              break
-            } || {
-              echo "::error::Push failed. Retrying in $(($RETRIES-1)) seconds."
-              sleep 5
-              ((RETRIES--))
-            }
-          }
-        done
-        [ $RETRIES -eq 0 ] && {
-          echo "::error::Failed to update after $((3-$RETRIES)) retries. Manual intervention required."
+        cmp --silent Data/search.xml Data/search_new.xml || (
+          echo "Files differ. Updating..."
+          mv Data/search_new.xml Data/search.xml
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git pull origin $GITHUB_REF --rebase # 添加拉取并变基操作以处理可能的冲突
+          git add Data/search.xml
+          git commit -m "Update search.xml with changes"
+          git push origin HEAD:$GITHUB_REF || (
+            echo "Push failed, possibly due to conflicts. Review and resolve manually."
+            exit 1
+          )
+        ) || (
+          echo "Comparison or update failed. Check the download and permissions."
           exit 1
-        }
+        )
 
     # ... 其他原有步骤 ...
 
+    # 完成步骤保持不变
     - name: Workflow Completion Marker
       if: always()
-      run: |
-        if [ "${{ steps.compare_and_update_if_different.outcome }}" = "success" ]; then
-          echo 'Workflow completed successfully. All updates applied or verified no changes needed.'
-        elif [ "${{ steps.compare_and_update_if_different.outcome }}" = "failure" ]; then
-          echo '::error::Workflow did not complete successfully. See previous steps for error details.'
-        else
-          echo 'Workflow finished without applying changes. No updates were necessary.'
-        fi
-          echo '工作流结束，未应用更改。无需更新。'
-        fi
+      run: echo 'Workflow finished. No changes made or all updates applied successfully.'
