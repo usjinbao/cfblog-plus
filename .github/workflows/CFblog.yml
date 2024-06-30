@@ -17,7 +17,7 @@ jobs:
     - name: 设置 Node.js 环境版本
       uses: actions/setup-node@v3
       with:
-        node-version: 20
+        node-version: 16
 
     - name: 检查文件是否存在
       id: check_file
