@@ -30,14 +30,14 @@ jobs:
     - name: Check if files have changed
       id: check_changes
       run: |
-        git diff --quiet --exit-code || exit 0  # 检查是否有文件变更，如果没有变更则退出成功状态码
+        git diff --quiet --exit-code || echo "Files have changed"  # 检查是否有文件变更
       
     - name: Change to branch
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
         git switch -C $CFBLOG_BRANCH  # 切换到指定的分支，如果不存在则创建新分支
-
+      
     - name: Commit and push changes
       if: steps.check_changes.outputs.result == 'true'  # 只有在文件有变更时才执行提交和推送
       run: |
@@ -46,6 +46,6 @@ jobs:
         git add Data/search.xml
         git commit -m "Update data $(date +'%Y-%m-%d %H:%M:%S')"  # 提交更新到 GitHub，包含时间戳
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-        
+      
     - name: Done
       run: echo 'Workflow completed successfully'  # 完成工作流程的输出确认信息
