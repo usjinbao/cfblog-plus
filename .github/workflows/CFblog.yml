@@ -14,10 +14,10 @@ jobs:
       with:
         fetch-depth: 0 # 获取完整的提交历史，便于后续的git操作
 
-    - name: 设置 Node.js 环境版本
+    - name: 设置 Node.js 环境 16
       uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 20
 
     - name: 检查文件是否存在
       id: check_file
@@ -27,7 +27,6 @@ jobs:
         else
           echo "::set-output name=exists::false"
         fi
-
     - name: 从远程获取 search.xml 文件
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
@@ -35,24 +34,20 @@ jobs:
       run: |
         mkdir -p Data
         curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" -o Data/search_new.xml
-
     - name: 比较并根据差异更新文件
       if: steps.check_file.outputs.exists == 'true'
       run: |
-        echo "开始比较文件..."
-        if cmp -s Data/search.xml Data/search_new.xml; then
-          echo "文件一致，无需更新。"
-        else
+        if ! cmp -s Data/search.xml Data/search_new.xml; then
           echo "文件存在差异，开始更新..."
           mv Data/search_new.xml Data/search.xml
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add Data/search.xml
           git commit -m "更新 search.xml 文件以反映最新变更"
-          git pull --rebase origin $GITHUB_REF
           git push origin HEAD:$GITHUB_REF
+        else
+          echo "文件一致，无需更新。"
         fi
-
     - name: 若原文件不存在，则提交新增文件
       if: steps.check_file.outputs.exists == 'false'
       run: |
@@ -62,7 +57,6 @@ jobs:
         git add Data/search.xml
         git commit -m "首次提交或重新添加 search.xml 文件"
         git push origin HEAD:$GITHUB_REF
-
     - name: 工作流完成标记
       if: always()
       run: echo '工作流执行完毕。无论是否进行了文件更新，均已成功处理。'
