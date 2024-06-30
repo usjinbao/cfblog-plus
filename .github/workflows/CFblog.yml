@@ -9,28 +9,20 @@ jobs:
   update_search_xml:
     runs-on: ubuntu-latest
     steps:
-    - name: 检出存储库
+    - name: 检出存储库并清理工作区
       uses: actions/checkout@v3
+      with:
+        ref: ${{ github.ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+      # 清理工作区，确保干净的状态
+      run: |
+        git clean -ffdx
+        git reset --hard HEAD
 
     - name: 设置 Node.js 环境 16
       uses: actions/setup-node@v3
       with:
         node-version: 16
-
-    - name: 检查 Data/search.xml 文件是否存在
-      id: check_file
-      run: |
-        if [ -f "Data/search.xml" ]; then
-          echo "::set-output name=exists::true"
-        else
-          echo "::set-output name=exists::false"
-        fi
-
-    - name: 删除本地存在的 search.xml 文件（如果存在）
-      if: steps.check_file.outputs.exists == 'true'
-      run: |
-        echo "删除已存在的本地 search.xml 文件。"
-        rm Data/search.xml
 
     - name: 从远程下载 search.xml 文件（最多尝试3次）
       env:
@@ -60,43 +52,28 @@ jobs:
           fi
         done
 
-    - name: 比较并更新文件（如有不同）
-      if: steps.check_file.outputs.exists == 'true'
-      run: |
-        if diff Data/search.xml Data/search.xml > /dev/null; then
-          echo "文件一致，无需更新。"
-        else
-          echo "文件有变化，准备更新。"
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          
-          # 检查并暂存未提交的更改
-          if [ -n "$(git status --porcelain)" ]; then
-            git stash save --keep-index "Stash unsaved changes before pulling"
-          fi
-          
-          git pull origin $GITHUB_REF --rebase
-          git add Data/search.xml
-          git commit -m "更新 search.xml 文件"
-          git push origin HEAD:$GITHUB_REF
-          
-          # 如果之前有暂存更改，现在应用回去
-          if git stash list | grep -q "Stash unsaved changes before pulling"; then
-            git stash apply
-          fi
-        fi
-
-    - name: 若文件不存在，提交并推送新下载的文件
-      if: steps.check_file.outputs.exists == 'false'
+    - name: 提交并推送更新（如果有必要）
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add Data/search.xml
-        git commit -m "初次提交或重新添加 search.xml 文件"
-        git push origin HEAD:$GITHUB_REF
-        echo "新文件已成功提交至仓库。"
+        git diff --staged --quiet || {
+          git commit -m "更新 search.xml 文件"
+          git pull --rebase origin $GITHUB_REF
+          git push origin HEAD:$GITHUB_REF
+          echo "文件更新成功推送到仓库。"
+        } || {
+          echo "::error ::提交或推送失败。"
+          exit 1
+        } || {
+          echo "::notice ::文件无变化，无需提交。"
+        }
 
     - name: 工作流完成标识
       if: always()
       run: |
-        echo "工作流已执行完毕。"
+        if [[ "${{ job.status }}" == "success" ]]; then
+          echo '工作流执行成功，文件已根据需要更新或确认无更改。'
+        else
+          echo '::错误::工作流执行过程中遇到错误。'
+        fi
