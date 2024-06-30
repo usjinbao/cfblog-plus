@@ -23,15 +23,18 @@ jobs:
         curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > sitemap.xml
       
     - name: Change to branch
+      env:
+        CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
-        git checkout -B $CFBLOG_BRANCH
+        git checkout -b $CFBLOG_BRANCH
+        git checkout $CFBLOG_BRANCH
         
     - name: Commit change
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add .
-        git commit -m "Update from GitHub Action $(date +'%Y-%m-%d')"
+        git commit -m "Update from GitHub Action $(date +%Y-%m-%d)"
         
     - name: Push change
       env:
