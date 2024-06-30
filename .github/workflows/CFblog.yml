@@ -43,7 +43,7 @@ jobs:
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add Data/search.xml
-          git commit -m "更新 search.xml 文件以反映最新变更"
+          git commit -m "Updata"
           git push origin HEAD:$GITHUB_REF
         else
           echo "文件一致，无需更新。"
@@ -55,7 +55,6 @@ jobs:
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add Data/search.xml
-        git commit -m "首次提交或重新添加 search.xml 文件"
         git push origin HEAD:$GITHUB_REF
     - name: 工作流完成标记
       if: always()
