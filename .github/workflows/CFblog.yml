@@ -36,14 +36,14 @@ jobs:
 
     - name: Move files to repository root
       run: |
-        mv -f Data/search.xml search.xml
-        mv -f Data/sitemap.xml sitemap.xml
+        mv -f Data/search.xml Data/search.xml
+        mv -f Data/sitemap.xml Data/search.xml
         
     - name: Commit and push changes
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add search.xml sitemap.xml  # 确保添加的是本地文件，而不是Data文件夹下的文件
+        git add Data/search.xml Data/sitemap.xml  # 确保添加的是本地文件，而不是Data文件夹下的文件
         git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 修改自定义提交消息
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
