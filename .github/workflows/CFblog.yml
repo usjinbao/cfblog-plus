@@ -25,8 +25,8 @@ jobs:
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
         mkdir -p Data  # 确保文件夹存在
-        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > admin/search.xml
-        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > admin/sitemap.xml
+        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > search.xml
+        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > sitemap.xml
         
     - name: Change to branch
       env:
