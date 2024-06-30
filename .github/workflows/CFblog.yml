@@ -19,11 +19,6 @@ jobs:
       with:
         node-version: 16  # 明确指定使用 Node.js 16 版本
       
-    - name: Clean up previous temporary files
-      run: |
-        rm -f Data/search.xml.tmp
-        rm -f Data/sitemap.xml.tmp
-      
     - name: Create directory and get search.xml and sitemap.xml
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
@@ -33,7 +28,7 @@ jobs:
         curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml.tmp
         curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/sitemap.xml.tmp
         
-        # 检查文件是否有变化，如果没有则跳过后续步骤
+        # 检查文件是否有变化，如果没有则跳到完成步骤
         if cmp -s "Data/search.xml.tmp" "Data/search.xml"; then
           echo "No changes in search.xml"
           exit 0
@@ -50,6 +45,7 @@ jobs:
         git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
 
     - name: Commit and push changes
+      if: success()  # 只有在前面的步骤成功时才会执行
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
@@ -58,4 +54,5 @@ jobs:
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
     - name: Done
+      if: success()  # 只有在前面的步骤成功时才会执行
       run: echo 'Workflow completed successfully'
