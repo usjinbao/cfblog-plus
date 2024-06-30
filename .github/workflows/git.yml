@@ -33,22 +33,13 @@ jobs:
       run: |
         git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
 
-    - name: Check for changes
-      id: check_changes
-      run: |
-        if git diff --quiet; then
-          echo "no changes"
-          echo "::set-output name=changes::false"
-        else
-          echo "changes detected"
-          echo "::set-output name=changes::true"
-        fi
-      
     - name: Commit and push changes
-      if: steps.check_changes.outputs.changes == 'true'
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add .
         git commit -m "Update from GitHub Action $(date +%Y-%m-%d)"
-        git push -
+        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        
+    - name: Done
+      run: echo 'Workflow completed successfully'
