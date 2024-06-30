@@ -17,7 +17,7 @@ jobs:
     - name: Set up Node.js 20
       uses: actions/setup-node@v3
       with:
-        node-version: 20  # 明确指定使用Node.js 20版本
+        node-version: 22  # 明确指定使用Node.js 20版本
       
     - name: Get search.xml and sitemap.xml
       env:
