@@ -29,10 +29,8 @@ jobs:
     - name: 删除本地存在的 search.xml 文件（如果存在）
       if: steps.check_file.outputs.exists == 'true'
       run: |
-        if [ -f "Data/search.xml" ]; then
-          echo "::notice ::删除已存在的本地 search.xml 文件。"
-          rm Data/search.xml
-        fi
+        echo "删除已存在的本地 search.xml 文件。"
+        rm Data/search.xml
 
     - name: 从远程下载 search.xml 文件（最多尝试3次）
       env:
@@ -65,16 +63,14 @@ jobs:
     - name: 比较并更新文件（如有不同）
       if: steps.check_file.outputs.exists == 'true'
       run: |
-        cmp --silent Data/search.xml Data/search.xml && {
+        if diff Data/search.xml Data/search.xml > /dev/null; then
           echo "文件一致，无需更新。"
-          echo "::notice ::文件比较后发现无变化，跳过此步骤。"
-        } || {
-          echo "::notice ::文件有变化，准备更新。"
+        else
+          echo "文件有变化，准备更新。"
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           
           # 检查并暂存未提交的更改
-          git status
           if [ -n "$(git status --porcelain)" ]; then
             git stash save --keep-index "Stash unsaved changes before pulling"
           fi
@@ -83,13 +79,12 @@ jobs:
           git add Data/search.xml
           git commit -m "更新 search.xml 文件"
           git push origin HEAD:$GITHUB_REF
-          echo "文件更新成功。"
           
           # 如果之前有暂存更改，现在应用回去
           if git stash list | grep -q "Stash unsaved changes before pulling"; then
             git stash apply
           fi
-        }
+        fi
 
     - name: 若文件不存在，提交并推送新下载的文件
       if: steps.check_file.outputs.exists == 'false'
@@ -104,14 +99,4 @@ jobs:
     - name: 工作流完成标识
       if: always()
       run: |
-        if [ "${{ steps.check_file.outcome }}" = "success" ]; then
-          if [ "${{ steps.compare_and_update_if_different.outcome }}" = "success" ]; then
-            echo '工作流执行成功。文件已更新或确认无需更改。'
-          else
-            echo '::错误::文件比较或更新步骤未成功。'
-          fi
-        elif [ "${{ steps.check_file.outcome }}" = "failure" ]; then
-          echo '::错误::初始文件检查失败。'
-        else
-          echo '工作流结束，未执行主要操作。'
-        fi
+        echo "工作流已执行完毕。"
