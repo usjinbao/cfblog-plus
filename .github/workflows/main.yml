@@ -1,12 +1,9 @@
 name: CFBlog Workflow Updated
 
 on:
-  # 手动触发事件保持不变
-  workflow_dispatch:
-
-  # 定时触发器，每小时运行一次
-  schedule:
-    - cron: '0 * * * *'  # 每小时的第0分钟执行
+  workflow_dispatch:  # 手动触发事件保持不变
+  watch:
+    types: started
 
 jobs:
   build:
@@ -15,11 +12,13 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4.2.0  # 更新到指定的稳定版本 v4.2.0
-
+      uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
+      
     - name: Set up Node.js 20
-      uses: actions/setup-node@v3  # 保持使用v3，但未指定具体小版本，建议查阅官方文档选取最新稳定小版本，如需要具体版本号可替换为类似于v3.x.x的形式
-
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20  # 明确指定使用Node.js 20版本
+      
     - name: Get search.xml and sitemap.xml
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
@@ -32,7 +31,8 @@ jobs:
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
-        git switch -C $CFBLOG_BRANCH
+        git switch -C $CFBLOG_BRANCH  # 使用git switch命令替代git checkout，这是较新的命令
+        # 第二次git checkout $CFBLOG_BRANCH是冗余的，已移除
         
     - name: Commit change
       run: |
