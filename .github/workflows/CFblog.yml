@@ -14,10 +14,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
       
-    - name: Set up Node.js 16  # 使用 Node.js 16
+    - name: Set up Node.js 20  # 使用 Node.js 16
       uses: actions/setup-node@v3
       with:
-        node-version: 16  # 明确指定使用 Node.js 16 版本
+        node-version: 20  # 明确指定使用 Node.js 16 版本
       
     - name: Get search.xml and sitemap.xml
       env:
@@ -26,7 +26,8 @@ jobs:
       run: |
         mkdir -p Data  # 确保文件夹存在
         curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml
-      
+        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > some-folder/sitemap.xml
+        
     - name: Change to branch
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
@@ -37,7 +38,7 @@ jobs:
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add some-folder/search.xml some-folder/sitemap.xml
+        git add Data/search.xml Data/sitemap.xml
         git commit -m "Update search.xml"  # 修改自定义提交消息
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
