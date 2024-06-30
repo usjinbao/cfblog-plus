@@ -43,7 +43,6 @@ jobs:
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add search.xml sitemap.xml  # 确保添加的是本地文件，而不是Data文件夹下的文件
         git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 修改自定义提交消息
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
