@@ -22,7 +22,6 @@ jobs:
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
         curl 'https://'$CFBLOG_HOST'/admin/search.xml' -H 'cfblog_token: '$CFBLOG_TOKEN'' >search.xml
-        curl 'https://'$CFBLOG_HOST'/admin/sitemap.xml' -H 'cfblog_token: '$CFBLOG_TOKEN'' >sitemap.xml
 
     - name: change to branch
       env:
