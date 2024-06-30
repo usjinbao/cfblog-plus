@@ -34,19 +34,13 @@ jobs:
       run: |
         git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
 
-    - name: Check for changes
-      id: check_changes
-      run: |
-        git diff-index --quiet HEAD || echo "::set-output name=files_changed::true"
-      
-    - name: Commit and push changes
-      if: steps.check_changes.outputs.files_changed == 'true'
+    - name: Commit changes (if any)
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add Data/search.xml Data/sitemap.xml
-        git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"
-        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        git diff --quiet --exit-code || git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"
+        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git || echo "No changes to push."
         
     - name: Done
       run: echo 'Workflow completed successfully'
