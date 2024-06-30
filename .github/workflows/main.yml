@@ -1,7 +1,7 @@
-name: 'CFBlog'
+name: CFBlog Workflow Updated
 
 on:
-  workflow_dispatch:  # 添加手动触发事件
+  workflow_dispatch:  # 手动触发事件保持不变
   watch:
     types: started
 
@@ -12,10 +12,12 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
       
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Set up Node.js 20
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20  # 明确指定使用Node.js 20版本
       
     - name: Get search.xml and sitemap.xml
       env:
@@ -29,8 +31,8 @@ jobs:
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
-        git checkout -b $CFBLOG_BRANCH
-        git checkout $CFBLOG_BRANCH
+        git switch -C $CFBLOG_BRANCH  # 使用git switch命令替代git checkout，这是较新的命令
+        # 第二次git checkout $CFBLOG_BRANCH是冗余的，已移除
         
     - name: Commit change
       run: |
@@ -45,7 +47,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        git push -f https://$GITHUB_LOGIN:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+        git push -f https://${GITHUB_LOGIN}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
         
     - name: Done
-      run: echo 'done'
+      run: echo 'Workflow completed successfully'
