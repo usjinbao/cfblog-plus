@@ -10425,10 +10425,10 @@ body>header.header.header-style-2 .nav>li.active>a,body>header.header.header-sty
 .wpcom-shortcode-tags li:hover a,body>header.header.header-style-2,body>header.header.header-style-2 .navbar-action .login:hover,body>header.header.header-style-2 .navbar-action .profile>li>a,body>header.header.header-style-2 .navbar-search-btn,body>header.header.header-style-2 .navbar-search-close {
 	color:#fff
 }
-body>header.header.header-style-2 .navbar-action .login,body>header.header.header-style-2 .navbar-search-icon,body>header.header.header-style-2 .shopping-cart a {
+body>header.header.header-style-2 .navbar-action .login,body>header.header.header-style-2,body>header.header.header-style-2 .shopping-cart a {
 	color:rgba(255,255,255,.9)
 }
-body>header.header.header-style-2 .navbar-search-icon:hover,body>header.header.header-style-2 .shopping-cart a:hover {
+body>header.header.header-style-2 .non:hover,body>header.header.header-style-2 .shopping-cart a:hover {
 	color:#fff
 }
 body>header.header.header-style-2 .navbar-search-input {
@@ -10669,14 +10669,17 @@ body.visual-editor>header.header {
 	padding:0 3px;
 	margin-top:2px
 }
+
 .navbar-search {
 	display:none;
 	position:absolute;
-	left:-10px;
-	top:6px;
+	left:0;
+	top:20px;
 	width:100%;
-	z-index:	
+	z-index:1
 }
+
+
 .navbar-search.warning::-webkit-input-placeholder {
 	color:#fa5555!important
 }
@@ -10911,7 +10914,7 @@ body>header.header.header-style-2 .icon-bar {
 	padding:20px 0 30px;
 	overflow:hidden
 }
-.navbar-action #j-user-wrap {
+.navbar-action #j-user-wrap { /*登录按钮手机端*/
 	display:-webkit-box;
 	display:-webkit-flex;
 	display:-ms-flexbox;
