@@ -23,11 +23,8 @@ jobs:
         curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > sitemap.xml
       
     - name: Change to branch
-      env:
-        CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
-        git checkout -b $CFBLOG_BRANCH
-        git checkout $CFBLOG_BRANCH
+        git checkout -B $CFBLOG_BRANCH
         
     - name: Commit change
       run: |
