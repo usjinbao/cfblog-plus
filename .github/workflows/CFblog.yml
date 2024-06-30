@@ -14,10 +14,10 @@ jobs:
       with:
         fetch-depth: 0 # 获取完整的提交历史，便于后续的git操作
 
-    - name: 设置 Node.js 环境版本
+    - name: 设置 Node.js 环境 16
       uses: actions/setup-node@v3
       with:
-        node-version: 20
+        node-version: 16
 
     - name: 检查文件是否存在
       id: check_file
@@ -39,7 +39,9 @@ jobs:
     - name: 比较并根据差异更新文件
       if: steps.check_file.outputs.exists == 'true'
       run: |
-        if ! cmp -s Data/search.xml Data/search_new.xml; then
+        if cmp -s Data/search.xml Data/search_new.xml; then
+          echo "文件一致，无需更新。"
+        else
           echo "文件存在差异，开始更新..."
           mv Data/search_new.xml Data/search.xml
           git config --global user.email "action@github.com"
@@ -47,8 +49,6 @@ jobs:
           git add Data/search.xml
           git commit -m "更新 search.xml 文件以反映最新变更"
           git push origin HEAD:$GITHUB_REF
-        else
-          echo "文件一致，无需更新。"
         fi
 
     - name: 若原文件不存在，则提交新增文件
