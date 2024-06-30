@@ -24,9 +24,9 @@ jobs:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
-        mkdir -p some-folder  # 确保文件夹存在
-        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > some-folder/search.xml
-        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > some-folder/sitemap.xml
+        mkdir -p Data  # 确保文件夹存在
+        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml
+        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/sitemap.xml
       
     - name: Change to branch
       env:
@@ -38,7 +38,7 @@ jobs:
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add some-folder/search.xml some-folder/sitemap.xml
+        git add Data/search.xml Data/sitemap.xml
         git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 修改自定义提交消息
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
