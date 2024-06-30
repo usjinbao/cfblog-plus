@@ -233,29 +233,24 @@
             --search-result-title-font-size: 15px; /* 搜索结果标题字体大小 */
             --search-result-content-font-size: 13px; /* 搜索结果内容字体大小 */
         }
-		
-
+	.navbar-search-ico {
+            display: inline-block; /* 或其他布局模式，如flex等 */
+            vertical-align: middle; /* 根据需要调整垂直对齐方式 */
+            margin-top: 5.3px; /* 搜索按钮上边距示例 */
+	    margin-left: -10px;
+	    position: absolute;
+	    cursor: pointer;
+        }	
 
         
         body {
             font-family: Arial, sans-serif;
         }
         
-		
-        #searchIcon {
-            cursor: pointer;
-            font-size: 24px;
-            color: #007bff;
-            display: inline-block;
-			position: absolute;
-			vertical-align: middle; /* 使图标与文本垂直居中对齐 */
-            display: inline-flex !important; /* 或者 display: inline-block !important; 根据需要选择 */
-        }
-        
         #searchModal {
             display: none; 
             position: fixed;
-            z-index: 2; 
+            z-index: 1; 
             top: 0; 
             left: 0;
             right: 0; 
@@ -276,10 +271,10 @@
             text-align: left;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-radius: 15px;
-			position: relative; /* 为绝对定位的子元素提供定位上下文 */
-			overflow-y: auto; /* 允许内容溢出时滚动 */
-			max-width: 900px; /* 您可以根据需要设定一个最大宽度，例如1200px */
-			min-width: 800px; /* 您可以根据需要设定一个最大宽度，例如1200px */
+	    position: relative; /* 为绝对定位的子元素提供定位上下文 */
+	    overflow-y: auto; /* 允许内容溢出时滚动 */
+	    max-width: 900px; /* 您可以根据需要设定一个最大宽度，例如1200px */
+	    min-width: 800px; /* 您可以根据需要设定一个最大宽度，例如1200px */
         }
         
         .searchInput {
