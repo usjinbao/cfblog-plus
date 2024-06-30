@@ -14,10 +14,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
       
-    - name: Set up Node.js 20  # 使用 Node.js 16
+    - name: Set up Node.js 16  # 使用 Node.js 16
       uses: actions/setup-node@v3
       with:
-        node-version: 20  # 明确指定使用 Node.js 16 版本
+        node-version: 16  # 明确指定使用 Node.js 16 版本
       
     - name: Get search.xml and sitemap.xml
       env:
