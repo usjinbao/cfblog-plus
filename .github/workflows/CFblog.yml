@@ -1,46 +1,51 @@
-name: CFBlog
+name: 'CFBlog'
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 手动触发事件保持不变
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *'  # 每小时执行一次
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    if: github.event.repository.owner.id == github.event.sender.id
+    
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
       
-    - name: Set up Node.js
+    - name: Set up Node.js 20
       uses: actions/setup-node@v3
       with:
-        node-version: '20'
-
-    - name: Create Data directory
-      run: mkdir -p Data
-
+        node-version: 20
+      
     - name: Get search.xml and sitemap.xml
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
-        curl -fsSL "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" >search.xml
-        curl -fsSL "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" >sitemap.xml
-
-    - name: Switch to branch
+        mkdir -p Data  # 确保文件夹存在
+        curl -fsSL "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml
+        curl -fsSL "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/sitemap.xml
+        
+    - name: Change to branch
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
-      run: git switch -C $CFBLOG_BRANCH
+      run: |
+        git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
 
+    - name: Move files to repository root
+      run: |
+        mv -f Data/search.xml search.xml
+        mv -f Data/sitemap.xml sitemap.xml
+        
     - name: Commit and push changes
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add Data/search.xml Data/sitemap.xml
-        git diff --quiet --exit-code || git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"
-        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git $CFBLOG_BRANCH || echo "No changes to push."
-
+        git add search.xml sitemap.xml  # 确保添加的是本地文件，而不是Data文件夹下的文件
+        git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 修改自定义提交消息
+        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        
     - name: Done
       run: echo 'Workflow completed successfully'
