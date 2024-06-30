@@ -14,7 +14,7 @@ jobs:
       with:
         fetch-depth: 0 # 获取完整的提交历史，便于后续的git操作
 
-    - name: 设置 Node.js 环境 16
+    - name: 设置 Node.js 环境版本
       uses: actions/setup-node@v3
       with:
         node-version: 20
