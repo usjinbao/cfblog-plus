@@ -1,49 +1,59 @@
-name: 'CFBlog'
+name: CFBlog Workflow with Conditional File Update and Clean Finish
 
 on:
-  workflow_dispatch:  # 手动触发事件保持不变
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # 每小时执行一次
+    - cron: '0 * * * *'
 
 jobs:
-  build:
+  update_search_xml:
     runs-on: ubuntu-latest
-    if: github.event.repository.owner.id == github.event.sender.id
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
-      
-    - name: Set up Node.js 16  # 使用 Node.js 16
-      uses: actions/setup-node@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
       with:
-        node-version: 16  # 明确指定使用 Node.js 16 版本
-      
-    - name: Create directory and get search.xml
+        fetch-depth: 0
+
+    - name: Check for Existing File
+      id: check_file
+      run: |
+        if [ -f "Data/search.xml" ]; then
+          echo "::set-output name=exists::true"
+        else
+          echo "::set-output name=exists::false"
+        fi
+
+    - name: Fetch Remote Search XML
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
-        mkdir -p Data  # 确保文件夹存在
-        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml
-      
-    - name: Change to branch
-      env:
-        CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
-      run: |
-        git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
+        mkdir -p Data
+        curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search_new.xml
 
-    - name: Commit and push changes
+    - name: Compare and Update if Different
+      if: steps.check_file.outputs.exists == 'true'
+      run: |
+        cmp --silent Data/search.xml Data/search_new.xml || (
+          echo "Files differ. Updating..."
+          mv Data/search_new.xml Data/search.xml
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add Data/search.xml
+          git commit -m "Update search.xml with changes"
+          git push origin HEAD:$GITHUB_REF
+        )
+
+    - name: Commit and Push if File Didn't Exist
+      if: steps.check_file.outputs.exists == 'false'
       run: |
         git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
-        git add Data/search.xml
-        git commit -m "Update search.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 修改自定义提交消息
-        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-    
-    - name: Clear cached files
-      run: |
-        rm -rf Data/search.xml
-      
-    - name: Done
-      run: echo 'Workflow completed successfully'
+        git.config --global user.name "GitHub Action"
+        git add Data/
+        git commit -m "Initial commit or re-adding search.xml"
+        git push origin HEAD:$GITHUB_REF
+
+    # 新增明确的完成步骤，确保工作流在无更新操作时也有正常结束的标志
+    - name: Workflow Completion Marker
+      if: always()
+      run: echo 'Workflow finished. No changes made or all updates applied successfully.'
