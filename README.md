@@ -1,16 +1,9 @@
-## 自用，请勿fork
-## 自用，请勿fork
-## 自用，请勿fork
-## 自用，请勿fork
-## 自用，请勿fork
-## 自用，请勿fork
-## 自用，请勿fork
-## 自用，请勿fork
+## 自用
 
 
 
 
-本项目**CFBlog-Plus**是由基于[gdtool/cloudflare-workers-blog](https://github.com/gdtool/cloudflare-workers-blog)二次开发而来，主要是对cf worker中的js进行自主开源，并扩展了许多功能。
+基于[gdtool/cloudflare-workers-blog](https://github.com/gdtool/cloudflare-workers-blog)二次开发而来，主要是对cf worker中的js进行自主开源，并扩展了许多功能。
 
 ## 与CF-Blog相比，有哪些变更：
 
