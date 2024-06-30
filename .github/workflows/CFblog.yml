@@ -9,17 +9,22 @@ jobs:
   update_search_xml:
     runs-on: ubuntu-latest
     steps:
-    - name: 检出存储库
+    - name: 检出存储库并清理工作区
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0 # 获取完整的提交历史，便于后续的git操作
+        ref: ${{ github.ref }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+      # 清理工作区，确保干净的状态
+      run: |
+        git clean -ffdx
+        git reset --hard HEAD
 
     - name: 设置 Node.js 环境 16
       uses: actions/setup-node@v3
       with:
         node-version: 16
 
-    - name: 检查文件是否存在
+    - name: 检查 Data/search.xml 文件是否存在
       id: check_file
       run: |
         if [ -f "Data/search.xml" ]; then
@@ -28,39 +33,73 @@ jobs:
           echo "::set-output name=exists::false"
         fi
 
-    - name: 从远程获取 search.xml 文件
+    - name: 处理已有文件（如果存在）
+      if: steps.check_file.outputs.exists == 'true'
+      run: |
+        echo "::notice ::删除已存在的本地 search.xml 文件。"
+        rm Data/search.xml
+
+    - name: 从远程下载 search.xml 文件（最多尝试3次）
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
         mkdir -p Data
-        curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" -o Data/search_new.xml
+        max_retries=3
+        retry_count=0
+        
+        while [ $retry_count -le $max_retries ]; do
+          download_status=$(curl -sfL --output /dev/null -w '%{http_code}' "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}")
+          
+          if [ "$download_status" -eq 200 ]; then
+            echo "::notice ::尝试第 $(($retry_count + 1)) 次下载 - 文件下载成功。"
+            curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml
+            break
+          else
+            echo "::warning ::尝试第 $(($retry_count + 1)) 次下载 - 文件下载失败，HTTP状态码: $download_status。准备重试..."
+            ((retry_count++))
+            sleep 5
+          fi
+          
+          if [ $retry_count -eq $max_retries ]; then
+            echo "::error ::达到最大重试次数，文件下载仍然失败。"
+            exit 1
+          fi
+        done
 
-    - name: 比较并根据差异更新文件
-      if: steps.check_file.outputs.exists == 'true'
+    - name: 检查并暂存未提交的更改
       run: |
-        if ! cmp -s Data/search.xml Data/search_new.xml; then
-          echo "文件存在差异，开始更新..."
-          mv Data/search_new.xml Data/search.xml
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add Data/search.xml
-          git commit -m "更新 search.xml 文件以反映最新变更"
-          git push origin HEAD:$GITHUB_REF
-        else
-          echo "文件一致，无需更新。"
+        git status
+        if [ -n "$(git status --porcelain)" ]; then
+          git stash save --keep-index "Stash unsaved changes before updating"
         fi
 
-    - name: 若原文件不存在，则提交新增文件
-      if: steps.check_file.outputs.exists == 'false'
+    - name: 拉取最新代码并尝试重新base
       run: |
-        mv Data/search_new.xml Data/search.xml
+        git pull origin $GITHUB_REF --rebase
+
+    - name: 提交并推送更新
+      run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git add Data/search.xml
-        git commit -m "首次提交或重新添加 search.xml 文件"
-        git push origin HEAD:$GITHUB_REF
+        git diff --staged --quiet || {
+          git commit -m "更新 search.xml 文件"
+          git push origin HEAD:$GITHUB_REF
+          echo "文件更新成功推送到仓库。"
+        } || {
+          echo "::notice ::文件无变化，无需提交。"
+        }
 
-    - name: 工作流完成标记
+    - name: 应用之前暂存的更改（如果有的话）
+      if: steps.check_changes.outcome == 'success' && steps.stash_changes.outcome == 'success'
+      run: git stash apply
+
+    - name: 工作流完成标识
       if: always()
-      run: echo '工作流执行完毕。无论是否进行了文件更新，均已成功处理。'
+      run: |
+        if [[ "${{ job.status }}" == "success" ]]; then
+          echo '工作流执行成功，文件已根据需要更新或确认无更改。'
+        else
+          echo '::错误::工作流执行过程中遇到错误。'
+        fi
