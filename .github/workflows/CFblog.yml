@@ -19,23 +19,40 @@ jobs:
       with:
         node-version: 16  # 明确指定使用 Node.js 16 版本
       
-    - name: Create directory and get search.xml and sitemap.xml
+    - name: Create directory and get search.xml
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
         mkdir -p Data  # 确保文件夹存在
         curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml.tmp
-        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/sitemap.xml.tmp
         
-        # 检查文件是否有变化，如果没有则跳到完成步骤
+        # 检查 search.xml 是否有变化，如果没有则跳到完成步骤
         if cmp -s "Data/search.xml.tmp" "Data/search.xml"; then
           echo "No changes in search.xml"
+          rm Data/search.xml.tmp
           exit 0
         fi
         
         # 如果有变化，则覆盖原始文件并继续
         mv -f Data/search.xml.tmp Data/search.xml
+      
+    - name: Create directory and get sitemap.xml
+      env:
+        CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
+        CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
+      run: |
+        mkdir -p Data  # 确保文件夹存在
+        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/sitemap.xml.tmp
+        
+        # 检查 sitemap.xml 是否有变化，如果没有则跳到完成步骤
+        if cmp -s "Data/sitemap.xml.tmp" "Data/sitemap.xml"; then
+          echo "No changes in sitemap.xml"
+          rm Data/sitemap.xml.tmp
+          exit 0
+        fi
+        
+        # 如果有变化，则覆盖原始文件并继续
         mv -f Data/sitemap.xml.tmp Data/sitemap.xml
       
     - name: Change to branch
