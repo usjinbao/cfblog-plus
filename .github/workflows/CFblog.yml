@@ -24,31 +24,22 @@ jobs:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
-        curl 'https://'$CFBLOG_HOST'/admin/search.xml' -H 'cfblog_token: '$CFBLOG_TOKEN'' >search.xml
-        curl 'https://'$CFBLOG_HOST'/admin/sitemap.xml' -H 'cfblog_token: '$CFBLOG_TOKEN'' >sitemap.xml
-
-    - name: change to branch
+        mkdir -p Data  # 确保文件夹存在
+        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > search.xml
+        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > sitemap.xml
+        
+    - name: Change to branch
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
-        git checkout -b $CFBLOG_BRANCH
-        git checkout $CFBLOG_BRANCH
-        
-    - name: commit change
+        git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
+
+    - name: Commit and push changes
       run: |
         git config --global user.email "action@github.com"
-        git config --global user.name "action"
-        git add .
-        git commit -m "Update from Github Action_"`date +%Y-%m-%d`
+        git config --global user.name "GitHub Action"
+        git commit -m "Update search.xml"  # 修改自定义提交消息
+        git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
-    - name: push change
-      env:
-        GITHUB_LOGIN: ${{ github.repository_owner }}
-        GITHUB_TOKEN: ${{ github.token }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-      run: |
-        git push -f https://$GITHUB_LOGIN:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
-        
-    - name: done
-      run: echo 'done'
-    
+    - name: Done
+      run: echo 'Workflow completed successfully'
