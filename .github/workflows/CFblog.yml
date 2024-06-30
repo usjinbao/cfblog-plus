@@ -12,35 +12,40 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  # 更新到最新版本，通常更佳的兼容性和功能
+      uses: actions/checkout@v3  # 使用最新版本的 checkout 操作，确保兼容性和功能更新
       
-    - name: Set up Node.js 16  # 使用 Node.js 16
+    - name: Set up Node.js 16  # 设置 Node.js 16
       uses: actions/setup-node@v3
       with:
         node-version: 16  # 明确指定使用 Node.js 16 版本
       
-    - name: Create directory and get search.xml and sitemap.xml
+    - name: Create directory and get search.xml
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
         mkdir -p Data  # 确保文件夹存在
-        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml
-        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/sitemap.xml
+        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search.xml  # 下载最新的 search.xml 文件
+      
+    - name: Check if files have changed
+      id: check_changes
+      run: |
+        git diff --quiet --exit-code || exit 0  # 检查是否有文件变更，如果没有变更则退出成功状态码
       
     - name: Change to branch
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
-        git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
+        git switch -C $CFBLOG_BRANCH  # 切换到指定的分支，如果不存在则创建新分支
 
     - name: Commit and push changes
+      if: steps.check_changes.outputs.result == 'true'  # 只有在文件有变更时才执行提交和推送
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add Data/search.xml Data/sitemap.xml
-        git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 修改自定义提交消息
+        git add Data/search.xml
+        git commit -m "Update data $(date +'%Y-%m-%d %H:%M:%S')"  # 提交更新到 GitHub，包含时间戳
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
     - name: Done
-      run: echo 'Workflow completed successfully'
+      run: echo 'Workflow completed successfully'  # 完成工作流程的输出确认信息
