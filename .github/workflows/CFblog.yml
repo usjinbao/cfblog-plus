@@ -1,59 +1,59 @@
-name: CFBlog Workflow with Conditional File Update and Clean Finish
+name: CFBlog 工作流带条件文件更新及清晰完成标记
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *' # 每小时整点触发
 
 jobs:
   update_search_xml:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository
+    - name: 检出存储库
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # 获取完整的提交历史，便于后续的git操作
 
-    - name: Check for Existing File
+    - name: 检查文件是否存在
       id: check_file
       run: |
         if [ -f "Data/search.xml" ]; then
-          echo "::set-output name=exists::true"
+          echo "::set-output name=exists::true" # 文件存在，设置输出变量
         else
-          echo "::set-output name=exists::false"
+          echo "::set-output name=exists::false" # 文件不存在，设置输出变量
         fi
 
-    - name: Fetch Remote Search XML
+    - name: 从远程获取 search.xml 文件
       env:
-        CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
-        CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
+        CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }} # 使用GitHub Secrets存储的令牌
+        CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }} # 使用GitHub Secrets存储的主机地址
       run: |
-        mkdir -p Data
-        curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search_new.xml
+        mkdir -p Data # 确保Data目录存在
+        curl -s "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > Data/search_new.xml # 下载文件到本地
 
-    - name: Compare and Update if Different
+    - name: 比较并根据差异更新文件
       if: steps.check_file.outputs.exists == 'true'
       run: |
         cmp --silent Data/search.xml Data/search_new.xml || (
-          echo "Files differ. Updating..."
-          mv Data/search_new.xml Data/search.xml
+          echo "文件存在差异，开始更新..."
+          mv Data/search_new.xml Data/search.xml # 移动新文件覆盖旧文件
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add Data/search.xml
-          git commit -m "Update search.xml with changes"
+          git commit -m "更新 search.xml 文件以反映最新变更"
           git push origin HEAD:$GITHUB_REF
         )
 
-    - name: Commit and Push if File Didn't Exist
+    - name: 若原文件不存在，则提交新增文件
       if: steps.check_file.outputs.exists == 'false'
       run: |
         git config --global user.email "action@github.com"
-        git.config --global user.name "GitHub Action"
-        git add Data/
-        git commit -m "Initial commit or re-adding search.xml"
+        git config --global user.name "GitHub Action"
+        git add Data/ # 添加Data目录下所有内容
+        git commit -m "首次提交或重新添加 search.xml 文件"
         git push origin HEAD:$GITHUB_REF
 
-    # 新增明确的完成步骤，确保工作流在无更新操作时也有正常结束的标志
-    - name: Workflow Completion Marker
-      if: always()
-      run: echo 'Workflow finished. No changes made or all updates applied successfully.'
+    # 新增步骤：工作流完成标识
+    - name: 工作流完成标记
+      if: always() # 无论之前步骤结果如何，此步骤都会执行
+      run: echo '工作流执行完毕。无论是否进行了文件更新，均已成功处理。'
