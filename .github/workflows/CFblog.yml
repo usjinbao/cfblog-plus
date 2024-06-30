@@ -39,6 +39,7 @@ jobs:
     - name: 比较并根据差异更新文件
       if: steps.check_file.outputs.exists == 'true'
       run: |
+        echo "开始比较文件..."
         if cmp -s Data/search.xml Data/search_new.xml; then
           echo "文件一致，无需更新。"
         else
@@ -48,6 +49,7 @@ jobs:
           git config --global user.name "GitHub Action"
           git add Data/search.xml
           git commit -m "更新 search.xml 文件以反映最新变更"
+          git pull --rebase origin $GITHUB_REF
           git push origin HEAD:$GITHUB_REF
         fi
 
