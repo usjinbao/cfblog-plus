@@ -1,12 +1,9 @@
 name: 'CFBlog'
 
 on:
-  watch:
-    types: started
+  workflow_dispatch:  # 手动触发事件保持不变
   schedule:
-    # 时间是按UTC设置的，实际执行时间，则自动按东八区执行
-    # 即+8小时，故实际执行时间为：18点
-    - cron: 0 10 * * *
+    - cron: '0 * * * *'  # 每小时执行一次
 
 jobs:
   build:
