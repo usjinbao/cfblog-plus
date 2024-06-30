@@ -63,33 +63,33 @@ jobs:
         done
 
     - name: 比较并更新文件（如有不同）
-  if: steps.check_file.outputs.exists == 'true'
-  run: |
-    cmp --silent Data/search.xml Data/search_new.xml && {
-      echo "文件一致，无需更新。"
-      echo "::notice ::文件比较后发现无变化，跳过此步骤。"
-    } || {
-      echo "::notice ::文件有变化，准备更新。"
-      git config --global user.email "action@github.com"
-      git config --global user.name "GitHub Action"
-      
-      # 检查并暂存未提交的更改
-      git status
-      if [ -n "$(git status --porcelain)" ]; then
-        git stash save --keep-index "Stash unsaved changes before pulling"
-      fi
-      
-      git pull origin $GITHUB_REF --rebase
-      git add Data/search.xml
-      git commit -m "更新 search.xml 文件"
-      git push origin HEAD:$GITHUB_REF
-      echo "文件更新成功。"
-      
-      # 如果之前有暂存更改，现在应用回去
-      if git stash list | grep -q "Stash unsaved changes before pulling"; then
-        git stash apply
-      fi
-    }
+      if: steps.check_file.outputs.exists == 'true'
+      run: |
+        cmp --silent Data/search.xml Data/search_new.xml && {
+          echo "文件一致，无需更新。"
+          echo "::notice ::文件比较后发现无变化，跳过此步骤。"
+        } || {
+          echo "::notice ::文件有变化，准备更新。"
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          
+          # 检查并暂存未提交的更改
+          git status
+          if [ -n "$(git status --porcelain)" ]; then
+            git stash save --keep-index "Stash unsaved changes before pulling"
+          fi
+          
+          git pull origin $GITHUB_REF --rebase
+          git add Data/search.xml
+          git commit -m "更新 search.xml 文件"
+          git push origin HEAD:$GITHUB_REF
+          echo "文件更新成功。"
+          
+          # 如果之前有暂存更改，现在应用回去
+          if git stash list | grep -q "Stash unsaved changes before pulling"; then
+            git stash apply
+          fi
+        }
 
     - name: 若文件不存在，提交并推送新下载的文件
       if: steps.check_file.outputs.exists == 'false'
