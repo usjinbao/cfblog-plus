@@ -1,4 +1,4 @@
-name: CFBlog 工作流最终版
+name: CFBlog工作流最终版
 
 on:
   workflow_dispatch:
