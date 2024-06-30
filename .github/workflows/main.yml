@@ -11,37 +11,38 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     
     steps:
-    - uses: actions/checkout@master
-    - name: Get search.xml、sitemap.xml
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Get search.xml and sitemap.xml
       env:
         CFBLOG_TOKEN: ${{ secrets.CFBLOG_TOKEN }}
         CFBLOG_HOST: ${{ secrets.CFBLOG_HOST }}
       run: |
-        curl 'https://'$CFBLOG_HOST'/admin/search.xml' -H 'cfblog_token: '$CFBLOG_TOKEN'' >search.xml
-        curl 'https://'$CFBLOG_HOST'/admin/sitemap.xml' -H 'cfblog_token: '$CFBLOG_TOKEN'' >sitemap.xml
-
-    - name: change to branch
+        curl "https://${CFBLOG_HOST}/admin/search.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > search.xml
+        curl "https://${CFBLOG_HOST}/admin/sitemap.xml" -H "cfblog_token: ${CFBLOG_TOKEN}" > sitemap.xml
+      
+    - name: Change to branch
       env:
         CFBLOG_BRANCH: ${{ secrets.CFBLOG_BRANCH }}
       run: |
         git checkout -b $CFBLOG_BRANCH
         git checkout $CFBLOG_BRANCH
         
-    - name: commit change
+    - name: Commit change
       run: |
         git config --global user.email "action@github.com"
-        git config --global user.name "action"
+        git config --global user.name "GitHub Action"
         git add .
-        git commit -m "Update from Github Action_"`date +%Y-%m-%d`
+        git commit -m "Update from GitHub Action $(date +%Y-%m-%d)"
         
-    - name: push change
+    - name: Push change
       env:
         GITHUB_LOGIN: ${{ github.repository_owner }}
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         git push -f https://$GITHUB_LOGIN:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
         
-    - name: done
+    - name: Done
       run: echo 'done'
-      
