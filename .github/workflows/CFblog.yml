@@ -67,7 +67,8 @@ jobs:
           git config --global user.name "GitHub Action"
           git pull origin $GITHUB_REF --rebase
           git add Data/search.xml
-          git commit -m "更新 search.xml 文件"
+          git status  # 添加这行来检查状态，非必须，但有助于调试
+          git commit -m "更新 search.xml 文件" || { echo "没有要提交的变化，跳过提交。"; exit 0; }  # 如果没有变更则退出，避免错误
           git push origin HEAD:$GITHUB_REF
           echo "文件更新成功。"
         }
