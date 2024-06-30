@@ -34,11 +34,16 @@ jobs:
       run: |
         git switch -C $CFBLOG_BRANCH  # 使用 git switch 命令替代 git checkout，这是较新的命令
 
+    - name: Ensure updated files are in Data folder
+      run: |
+        cp -f Data/search.xml search.xml
+        cp -f Data/sitemap.xml sitemap.xml
+        
     - name: Commit and push changes
       run: |
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
-        git add Data/search.xml Data/sitemap.xml  # 添加 Data 文件夹下的文件
+        git add search.xml sitemap.xml  # 添加根目录下的文件
         git commit -m "Update search.xml and sitemap.xml from GitHub Action $(date +'%Y-%m-%d %H:%M:%S')"  # 自定义提交消息
         git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
