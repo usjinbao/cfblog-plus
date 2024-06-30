@@ -1,4 +1,4 @@
-name: CFBlog Workflow with Conditional File Update and Clean Finish
+name: CFBlog
 
 on:
   workflow_dispatch:
