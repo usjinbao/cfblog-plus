@@ -21,8 +21,10 @@ jobs:
       id: check_file
       run: |
         if [ -f "Data/search.xml" ]; then
+          echo "::notice ::文件存在。"
           echo "::set-output name=exists::true"
-        else
+      else
+          echo "::warning ::文件不存在。"
           echo "::set-output name=exists::false"
         fi
 
