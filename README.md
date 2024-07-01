@@ -3,7 +3,7 @@
 
 基于[gdtool/cloudflare-workers-blog](https://github.com/gdtool/cloudflare-workers-blog)二次开发而来，主要是对cf worker中的js进行自主开源，并扩展了许多功能。
 
-## 与CF-Blog相比，有哪些变更：
+## 与其相比，有哪些变更：
 
 1. 开源部署在workers中的js，根据自己的理解，进行自主开发并开源，详见[index_plus.js](https://github.com/Arronlong/cfblog-plus/blob/master/index_plus.js)
 2. 扩展md编辑器配置，可以自行根据需要修改配置。目前可配置支持html标签解析（默认关闭），更多设置参考[editormd官网](https://pandao.github.io/editor.md/)
@@ -40,7 +40,7 @@
 
 
 ### 前端演示:
-![](https://s3.ax1x.com/2020/12/22/rrP81S.png)
+![](https://img.bitwld.com/file/7333f980bc915f8c762a3.png)
 
 ### 后端演示:
-![](https://s3.ax1x.com/2020/12/22/rrAWrD.png)
+![](https://img.bitwld.com/file/da6a4a5d464f7d975fb41.png)
