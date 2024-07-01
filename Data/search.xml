@@ -138,28 +138,4 @@ https://[替换成你的].vercel.app/ui/register
 		<url>https://blog.bitwld.com/article/000002/.html</url>
 		<time>2024-06-26</time>
 	</blog>
-	<blog>
-		<title>Cloudflare Workers + KV 搭建一个带后台管理的blog</title>
-		<content>![](https://imgs.661212.xyz/file/29fb0d433bde0e1cd7d28.png)
-相关链接：    
-
-Demo :  https://cfblog.661212.xyz/
-
-Github：https://github.com/wang-useful/cfblog-plus
-
-(备注：本文介绍的是 cfblog-plus 原仓库为：https://github.com/Arronlong/cfblog-plus ，是gdtool/cloudflare-workers-blog 的一个修改版)
-
-1.介绍
-cf blog是一个运行在cloudflare workers 上的博客程序,使用 cloudflare KV作为数据库,无其他依赖. 兼容静态博客的速度,以及动态博客的灵活性，您可以通过访问项目仓库了解更多详情。
-
-2.项目特点：
-使用workers提供的KV作为数据库，可达到wordpress的灵活性
-使用cloudflare缓存html来降低KV的读写，使其可达到静态博客的速度
-后台使用markdown语法，方便快捷，一键发布(页面重构+缓存清理)
-cfblog-plus新增了 文章置顶、后台首页选择、文章隐藏、静态搜索等功能
-
-3.部署</content>
-		<url>https://blog.bitwld.com/article/000001/.html</url>
-		<time>2024-06-23</time>
-	</blog>
 </blogs>
