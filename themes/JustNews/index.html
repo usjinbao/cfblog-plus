@@ -8,21 +8,21 @@
 		<title>{{ &title }}</title>
 		<meta name="keywords" content="{{ &keyWords }}" />
 		<meta name="description" content="{{ &OPT.siteDescription }}" />
-
 		<link rel='stylesheet' id='stylesheet-css' href='{{ &OPT.theme_github_path }}JustNews/files/main.css' type='text/css' media='all' />
 		<link rel='stylesheet' id='font-awesome-css' href='{{ &OPT.theme_github_path }}JustNews/files/font-awesome.css?ver=6.1.2' type='text/css' media='all' />
-		<link rel='stylesheet' id='wp-block-library-css' href='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.5.3/wp-includes/css/dist/block-library/style.min.css?ver=5.6' type='text/css' media='all' />
-		<link rel='stylesheet' id='wp-components-css' href='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.5.3/wp-includes/css/dist/components/style.min.css?ver=5.6' type='text/css' media='all' />
-		<link rel='stylesheet' id='wp-editor-font-css' href='https://fonts.geekzu.org/css?family=Noto+Serif%3A400%2C400i%2C700%2C700i&#038;ver=5.6' type='text/css' media='all' />
-		<link rel='stylesheet' id='wp-block-editor-css' href='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.5.3/wp-includes/css/dist/block-editor/style.min.css?ver=5.6' type='text/css' media='all' />
-		<link rel='stylesheet' id='wp-nux-css' href='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.5.3/wp-includes/css/dist/nux/style.min.css?ver=5.6' type='text/css' media='all' />
-		<link rel='stylesheet' id='wp-editor-css' href='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.5.3/wp-includes/css/dist/editor/style.min.css?ver=5.6' type='text/css' media='all' />
-		<link rel='stylesheet' id='mux_video_block_style-css' href='https://cdn.jsdelivr.net/gh/newexsexy/wp@master/wp-content/plugins/ilab-media-tools/public/blocks/mediacloud-mux.blocks.style.min.css' type='text/css' media='all' />
-
-		<link rel='stylesheet' id='emojify-css' href='https://cdn.jsdelivr.net/npm/emojify.js@1.1.0/dist/css/basic/emojify.min.css?ver=1.1.0' type='text/css' media='all' />
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.6/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/wpcom-cn/assets/fonts/icons-2.6.4.js?ver=6.1.2' id='wpcom-icons-js'></script>
+		<link rel='stylesheet' id='wp-block-library-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.5.3/wp-includes/css/dist/block-library/style.min.css?ver=5.6' type='text/css' media='all' />
+		<link rel='stylesheet' id='wp-components-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.5.3/wp-includes/css/dist/components/style.min.css?ver=5.6' type='text/css' media='all' />
+		<link rel='stylesheet' id='wp-editor-font-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/noto+serif.css?ver=5.6' type='text/css' media='all' />
+		<link rel='stylesheet' id='wp-block-editor-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.5.3/wp-includes/css/dist/block-editor/style.min.css?ver=5.6' type='text/css' media='all' />
+		<link rel='stylesheet' id='wp-nux-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.5.3/wp-includes/css/dist/nux/style.min.css?ver=5.6' type='text/css' media='all' />
+		<link rel='stylesheet' id='wp-editor-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.5.3/wp-includes/css/dist/editor/style.min.css?ver=5.6' type='text/css' media='all' />
+		<link rel='stylesheet' id='mux_video_block_style-css' href='{{ &OPT.theme_github_path }}JustNews/files/WordPress/mediacloud-mux.blocks.style.min.css' type='text/css' media='all' />
+		<link rel='stylesheet' id='emojify-css' href='{{ &OPT.theme_github_path }}JustNews/files/emojify/emojify.min.css?ver=1.1.0' type='text/css' media='all' />
+		<script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/emojify/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+		<script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.6/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+		<script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/WordPress/fonts/icons-2.6.4.js?ver=6.1.2' id='wpcom-icons-js'></script>
+		<link rel="stylesheet" href="{{ &OPT.theme_github_path }}JustNews/files/WordPress/highlight.js/tomorrow-night-bright.min.css">
+		<script src='{{ &OPT.theme_github_path }}JustNews/files/WordPress/highlight.min.js'></script>
 
 		{{ &OPT.codeBeforHead }}
 	</head>
@@ -61,7 +61,7 @@
 
 			    <div id="searchModal">
                         <div id="searchContent">
-                        <input type="text" class="searchInput" id="searchQuery" placeholder="请输入搜索关键词...">
+                        <input type="text" class="searchInput" id="searchQuery" placeholder="请输入关键词，ESC退出...">
                         <hr class="divider">
                         <div id="results"></div>
                 </div>
@@ -69,7 +69,8 @@
 
 					<div class="navbar-action pull-right">	
 					<div class="navbar-search-ico" span id="searchIcon">
-                           <img src="https://cdn.jsdelivr.net/gh/usjinbao/cfblog-plus@master/themes/JustNews/sc.svg" alt="Search Icon" width="15.5" height="15.5">
+                           <img src="{{ &OPT.theme_github_path }}JustNews/sc.svg" alt="Search Icon" width="15.5" height="15.5">
+
 </div>
 						<div id="j-user-wrap">
 							<a class="login cur" href="/admin">登录</a>
@@ -236,6 +237,11 @@
             --search-result-title-font-size: 15px; /* 搜索结果标题字体大小 */
             --search-result-content-font-size: 13px; /* 搜索结果内容字体大小 */
         }
+		
+		#results {
+        max-height: calc(var(--search-modal-height) - 200px); /* 设置最大高度 */
+        overflow-y: auto; /* 允许内容溢出时显示滚动条 */
+    }
 	.navbar-search-ico {
             display: inline-block; /* 或其他布局模式，如flex等 */
             vertical-align: middle; /* 根据需要调整垂直对齐方式 */
@@ -333,6 +339,7 @@
             color: #666;
             text-decoration: none;
         }
+		
     </style>
 	
 		<script type='text/javascript' id='main-js-extra'>/* <![CDATA[ */	
@@ -367,14 +374,17 @@
 			/* ]]> */
 			</script>
 		<script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/main.js?ver=6.1.2' id='main-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/WordPress/WordPress@5.5.3/wp-includes/js/clipboard.min.js?ver=5.6' id='clipboard-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/emojify.js@1.1.0/dist/js/emojify.min.js?ver=1.1.0' id='emojify-js'></script>
-		<script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/wp-embed.js?ver=6.1.2' id='wp-embed-js'></script>
-		<script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/lazySizesConfig.js?ver=3.4.9' id='lazysizes-config-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/aFarkas/lazysizes@5.2.2/plugins/unveilhooks/ls.unveilhooks.min.js?ver=5.6' id='unveilhooks-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/aFarkas/lazysizes@5.2.2/plugins/bgset/ls.bgset.min.js?ver=5.6' id='bgset-js'></script>
-		<script type='text/javascript' src='https://cdn.jsdelivr.net/gh/aFarkas/lazysizes@5.2.2/lazysizes.min.js?ver=5.6' id='lazysizes-js'></script>
-		<script type='text/javascript' id='fifu-image-js-js-extra'>/* <![CDATA[ */
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.6/wp-includes/js/comment-reply.min.js?ver=5.6' id='comment-reply-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/idiotWu/jquery.toc.min.js?ver=1.0.1' id='githuber-toc-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/WordPress/WordPress@5.5.3/wp-includes/js/clipboard.min.js?ver=5.6' id='clipboard-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/emojify.js@1.1.0/dist/js/emojify.min.js?ver=1.1.0' id='emojify-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/wp-embed.js?ver=6.1.2' id='wp-embed-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/lazySizesConfig.js?ver=3.4.9' id='lazysizes-config-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/aFarkas/lazysizes@5.2.2/plugins/unveilhooks/ls.unveilhooks.min.js?ver=5.6' id='unveilhooks-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/aFarkas/lazysizes@5.2.2/plugins/bgset/ls.bgset.min.js?ver=5.6' id='bgset-js'></script>
+        <script type='text/javascript' src='{{ &OPT.theme_github_path }}JustNews/files/aFarkas/lazysizes@5.2.2/lazysizes.min.js?ver=5.6' id='lazysizes-js'></script>
+        <script type='text/javascript' id='fifu-image-js-js-extra'>
+		
 			var fifuImageVars = {
 				"fifu_lazy": "1",
 				"fifu_woo_lbox_enabled": "1",
@@ -428,7 +438,8 @@
 				});
 			})(jQuery);
 			</script>
-		<script id="module-emojify">(function($) {
+			
+<script id="module-emojify">(function($) {
 				$(function() {
 					if (typeof emojify !== "undefined") {
 						emojify.setConfig({
@@ -449,7 +460,8 @@
 document.getElementById('searchIcon').addEventListener('click', function() {
     document.getElementById('modalBackdrop').style.display = 'block'; // 显示遮罩层
     document.getElementById('searchWindow').style.display = 'block'; // 显示搜索窗口
-    document.getElementById('searchQuery').value = ''; // 每次打开时清空搜索框
+	
+    
 });
 
 window.onclick = function(event) {
@@ -459,13 +471,49 @@ window.onclick = function(event) {
         document.getElementById('searchWindow').style.display = 'none';
     }
 };
+    window.onclick = function(event) {
+
+        if (event.target == document.getElementById('searchModal')) {
+
+            document.getElementById('searchModal').style.display = 'none';
+			document.getElementById('results').innerHTML = ''; // 关闭时清空搜索结果
+			document.getElementById('searchQuery').value = ''; // 清空搜索框
+
+        }
+
+    };
+	
+
 
 document.addEventListener('keydown', function(event) {
-    if (event.key === "Escape") { // 按下Esc键时隐藏
-        document.getElementById('modalBackdrop').style.display = 'none';
-        document.getElementById('searchWindow').style.display = 'none';
+    if (event.key === "Escape") {
+        document.getElementById('searchModal').style.display = 'none';
+        // 按下Esc键时隐藏
+        document.getElementById('results').innerHTML = '';
+		document.getElementById('searchQuery').value = ''; // 清空搜索框
     }
 });
+
+
+document.getElementById('searchIcon').addEventListener('click', function() {
+    document.getElementById('searchModal').style.display = 'block'; // 显示搜索窗口
+    document.getElementById('searchQuery').focus(); // 聚焦在输入框内
+});
+
+document.getElementById('searchQuery').addEventListener('input', function() {
+    var query = this.value.trim();
+    var resultsContainer = document.getElementById('results');
+
+    if (query === '') {
+        resultsContainer.innerHTML = ''; // 清空搜索结果
+        resultsContainer.style.display = 'none'; // 隐藏搜索列表
+    } else {
+        resultsContainer.style.display = 'block'; // 显示搜索列表
+        // 执行你的搜索逻辑
+        // 例如：根据 'query' 显示搜索结果
+    }
+});
+
 	
 	
 
@@ -494,15 +542,6 @@ document.addEventListener('keydown', function(event) {
 
 
 
-    window.onclick = function(event) {
-
-        if (event.target == document.getElementById('searchModal')) {
-
-            document.getElementById('searchModal').style.display = 'none';
-
-        }
-
-    };
 
 
 
@@ -549,114 +588,72 @@ document.addEventListener('keydown', function(event) {
 
 
     function performSearch(query) {
-
     if (!xmlDoc) return;
 
     const blogs = xmlDoc.getElementsByTagName('blog');
-
     let results = '';
-
-
+    let count = 0; // 计数器
 
     for (let i = 0; i < blogs.length; i++) {
-
         const titleElement = blogs[i].getElementsByTagName('title')[0];
-
         const contentElement = blogs[i].getElementsByTagName('content')[0];
-
         const urlElement = blogs[i].getElementsByTagName('url')[0];
-
         const timeElement = blogs[i].getElementsByTagName('time')[0];
 
-
-
         if (titleElement && contentElement && urlElement && timeElement) {
-
             const title = titleElement.textContent;
-
             const content = contentElement.textContent;
-
             const url = urlElement.textContent;
-
             const time = timeElement.textContent;
 
-
-
             if (title.toLowerCase().includes(query.toLowerCase()) || content.toLowerCase().includes(query.toLowerCase())) {
-
                 const keywordIndex = content.toLowerCase().indexOf(query.toLowerCase());
 
-
-
                 if (keywordIndex !== -1) {
-
-                    // 计算前后内容长度，确保关键词在截取的范围内
-
                     const snippetStart = Math.max(0, keywordIndex - 100);
-
                     const snippetEnd = Math.min(content.length, keywordIndex + query.length + 100);
-
                     const snippet = content.substring(snippetStart, snippetEnd);
-
                     const highlightedSnippet = highlightKeyword(snippet, query);
 
-
-
                     results += `
-
                         <div class="searchResult" onclick="window.location.href='${url}'">
-
                             <h3>${highlightKeyword(title, query)}</h3>
-
                             <p>${highlightedSnippet}</p>
-
                             <div class="resultUrl">本文地址：${url} - 发布时间：${time}</div>
-
                         </div>
-
                     `;
-
+                    count++;
                 } else {
-
-                    // 如果直接在标题中找到了关键词，则使用标题进行高亮
-
                     results += `
-
                         <div class="searchResult" onclick="window.location.href='${url}'">
-
                             <h3>${highlightKeyword(title, query)}</h3>
-
-                            <p>${highlightKeyword(content.slice(0, 200), query)}...</p> <!-- 显示文章前200字作为摘要 -->
-
+                            <p>${highlightKeyword(content.slice(0, 200), query)}...</p>
                             <div class="resultUrl">本文地址：${url} - 发布时间：${time}</div>
-
                         </div>
-
                     `;
-
+                    count++;
                 }
-
             }
-
         }
-
     }
 
-
-
-    document.getElementById('results').innerHTML = results || '<p>没有找到匹配的结果。</p>';
-
+    const resultsContainer = document.getElementById('results');
+    if (results) {
+        resultsContainer.innerHTML = results;
+        resultsContainer.style.maxHeight = '550px'; // 设置固定高度
+        resultsContainer.style.overflowY = 'auto'; // 显示滚动条
+    } else {
+        resultsContainer.innerHTML = '<p>没有找到匹配的结果。</p>';
+        resultsContainer.style.maxHeight = 'none'; // 恢复默认高度
+        resultsContainer.style.overflowY = 'hidden'; // 隐藏滚动条
+    }
 }
 
+document.getElementById('searchQuery').addEventListener('input', () => {
+    const query = document.getElementById('searchQuery').value.trim();
+    performSearch(query);
+});
 
-
-    document.getElementById('searchQuery').addEventListener('input', () => {
-
-        const query = document.getElementById('searchQuery').value.trim();
-
-        performSearch(query);
-
-    });
 
 </script>
 	{{ &OPT.codeBeforBody }}
