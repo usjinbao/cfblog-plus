@@ -1,7 +1,5 @@
 ## 自用，代码根据自用修改，请勿使用，需要使用请联系，否则后果自负
-## 自用，代码根据自用修改，请勿使用，需要使用请联系，否则后果自负
-## 自用，代码根据自用修改，请勿使用，需要使用请联系，否则后果自负
-
+## Email:usjinbao@gmail.com
 
 基于[gdtool/cloudflare-workers-blog](https://github.com/gdtool/cloudflare-workers-blog)二次开发而来，主要是对cf worker中的js进行自主开源，并扩展了许多功能。
 
