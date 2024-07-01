@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blogs>
 	<blog>
-		<title>12333</title>
-		<content>123123</content>
-		<url>https://blog.bitwld.com/article/000006/.html</url>
-		<time>2024-07-01</time>
-	</blog>
-	<blog>
-		<title>21</title>
-		<content># MarkDown111</content>
-		<url>https://blog.bitwld.com/article/000005/.html</url>
-		<time>2024-07-01</time>
-	</blog>
-	<blog>
-		<title>1222</title>
-		<content># MarkDown1111</content>
-		<url>https://blog.bitwld.com/article/000004/.html</url>
-		<time>2024-07-01</time>
-	</blog>
-	<blog>
-		<title>博客搭建记录123341221323333</title>
-		<content>访问
-https://blog.bitwld.com/admin/search.xml?cfblog_token=11131232231111111dsadfsdf盛大发是12312盛大发sad发撒123123</content>
-		<url>https://blog.bitwld.com/article/000003/.html</url>
-		<time>2024-06-29</time>
-	</blog>
-	<blog>
 		<title>静态博客添加waline第三方评论,开启阅读统计和最近评论</title>
 		<content>##### 本文讲解,静态博客添加waline第三方评论,三个小目标
 1. 添加第三方评论
@@ -137,5 +112,30 @@ https://[替换成你的].vercel.app/ui/register
 ```</content>
 		<url>https://blog.bitwld.com/article/000002/.html</url>
 		<time>2024-06-26</time>
+	</blog>
+	<blog>
+		<title>12333</title>
+		<content>123123</content>
+		<url>https://blog.bitwld.com/article/000006/.html</url>
+		<time>2024-07-01</time>
+	</blog>
+	<blog>
+		<title>21</title>
+		<content># MarkDown111</content>
+		<url>https://blog.bitwld.com/article/000005/.html</url>
+		<time>2024-07-01</time>
+	</blog>
+	<blog>
+		<title>1222</title>
+		<content># MarkDown1111</content>
+		<url>https://blog.bitwld.com/article/000004/.html</url>
+		<time>2024-07-01</time>
+	</blog>
+	<blog>
+		<title>博客搭建记录123341221323333</title>
+		<content>访问
+https://blog.bitwld.com/admin/search.xml?cfblog_token=11131232231111111dsadfsdf盛大发是12312盛大发sad发撒123123</content>
+		<url>https://blog.bitwld.com/article/000003/.html</url>
+		<time>2024-06-29</time>
 	</blog>
 </blogs>
