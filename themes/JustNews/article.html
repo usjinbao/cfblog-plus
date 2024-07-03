@@ -543,7 +543,7 @@ document.getElementById('searchQuery').addEventListener('input', function() {
 
         try {
 
-            const response = await fetch('https://git.bitwld.com/https://raw.githubusercontent.com/usjinbao/web-blog/master/Data/search.xml'); // xml地址使用相对路径
+            const response = await fetch('https://simi.bitwld.com/Data/search.xml'); // xml地址使用相对路径
 
             if (!response.ok) throw new Error('Failed to fetch XML file.');
 
